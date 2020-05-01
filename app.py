@@ -1,4 +1,4 @@
-from flask import Flask, request
+from flask import Flask, request, send_file
 
 import socket
 
@@ -13,8 +13,7 @@ def get_page():
 
 @app.route('/campusmap.png')
 def campusmap():
-    with open("campusmap.png") as f:
-        return f.read()
+    return send_file('campusmap.png', mimetype='image/png')
 
 
 @app.route('/getInfo')
