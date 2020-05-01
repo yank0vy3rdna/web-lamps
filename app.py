@@ -12,7 +12,7 @@ def get_page():
 
 
 @app.route('/campusmap.png')
-def get_page():
+def campusmap():
     with open("campusmap.png") as f:
         return f.read()
 
