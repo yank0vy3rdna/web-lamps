@@ -11,6 +11,12 @@ def get_page():
         return f.read()
 
 
+@app.route('/campusmap.png')
+def get_page():
+    with open("campusmap.png") as f:
+        return f.read()
+
+
 @app.route('/getInfo')
 def getInfo():
 	sock = socket.socket()
