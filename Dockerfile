@@ -1,5 +1,5 @@
 FROM python:3
-ADD app.py /
 ADD requirements.txt /
-RUN pip install -r requirements.txt 
+RUN pip install -r requirements.txt
+ADD . /
 CMD [ "python", "./app.py"]
