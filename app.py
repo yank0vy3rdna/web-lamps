@@ -5,21 +5,10 @@ import socket
 app = Flask(__name__)
 
 
-@app.route('/')
-def get_page():
-    with open("index.html") as f:
-        return f.read()
-
-
-@app.route('/campusmap.png')
-def campusmap():
-    return send_file('campusmap.png', mimetype='image/png')
-
-
 @app.route('/getInfo')
 def getInfo():
 	sock = socket.socket()
-	sock.connect(('localhost', 9090))
+	sock.connect(('172.18.0.5', 9090))
 	sock.settimeout(1)
 	sock.send(b'getInfo')
 	data = sock.recv(10000)
@@ -31,7 +20,7 @@ def getInfo():
 def lampOff():
 	lamp_id = request.args.get('lamp_id')
 	sock = socket.socket()
-	sock.connect(('localhost', 9090))
+	sock.connect(('172.18.0.5', 9090))
 	sock.settimeout(1)
 	sock.send(('lampOff '+str(lamp_id)).encode('utf-8'))
 	data = sock.recv(10000)
@@ -42,7 +31,7 @@ def lampOff():
 def lampOn():
 	lamp_id = request.args.get('lamp_id')
 	sock = socket.socket()
-	sock.connect(('localhost', 9090))
+	sock.connect(('172.18.0.5', 9090))
 	sock.settimeout(1)
 	sock.send(('lampOn '+str(lamp_id)).encode('utf-8'))
 	data = sock.recv(10000)
@@ -52,7 +41,7 @@ def lampOn():
 @app.route('/allOn')
 def allOn():
 	sock = socket.socket()
-	sock.connect(('localhost', 9090))
+	sock.connect(('172.18.0.5', 9090))
 	sock.settimeout(1)
 	sock.send('allOn'.encode('utf-8'))
 	data = sock.recv(10000)
@@ -62,7 +51,7 @@ def allOn():
 @app.route('/allOff')
 def allOff():
 	sock = socket.socket()
-	sock.connect(('localhost', 9090))
+	sock.connect(('172.18.0.5', 9090))
 	sock.settimeout(1)
 	sock.send('allOff'.encode('utf-8'))
 	data = sock.recv(10000)
@@ -72,7 +61,7 @@ def allOff():
 @app.route('/getSunsetTime')
 def getSunsetTime():
 	sock = socket.socket()
-	sock.connect(('localhost', 9090))
+	sock.connect(('172.18.0.5', 9090))
 	sock.settimeout(1)
 	sock.send('getSunsetTime'.encode('utf-8'))
 	data = sock.recv(10000)
@@ -82,7 +71,7 @@ def getSunsetTime():
 @app.route('/getSunriseTime')
 def getSunriseTime():
 	sock = socket.socket()
-	sock.connect(('localhost', 9090))
+	sock.connect(('172.18.0.5', 9090))
 	sock.settimeout(1)
 	sock.send('getSunriseTime'.encode('utf-8'))
 	data = sock.recv(10000)
