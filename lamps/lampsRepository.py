@@ -1,5 +1,4 @@
 import json
-import socket
 
 from lamps.lamp import Lamp
 
@@ -14,7 +13,9 @@ class LampsRepository:
     def make_lamps(self, data):
         for i in data:
             disable_control = data[i].get("disable_control", False)
-            lamp = Lamp(i, data[i]["lampx"], data[i]["lampy"], data[i]["lampline"], data[i]["type"], disable_control)
+            disable_sun_control = data[i].get("disable_sun_control", False)
+            lamp = Lamp(i, data[i]["lampx"], data[i]["lampy"], data[i]["lampline"], data[i]["type"], disable_control,
+                        disable_sun_control)
             self.lamps.update({i: lamp})
 
     def allOn(self, sun=False):
