@@ -2,9 +2,9 @@ from flask import Flask, request, Response
 
 
 def login():
-    login = request.args.get('login')
+    username = request.args.get('username')
     password = request.args.get('password')
-    if login == "admin" and password == "qwerty123":
+    if username == "admin" and password == "qwerty123":
         return "token"
     return Response(status=403)
 

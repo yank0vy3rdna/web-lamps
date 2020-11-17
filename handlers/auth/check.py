@@ -1,8 +1,12 @@
-from flask import Flask
+from flask import Flask, request
 
 
 def check():
-    return "token"
+    token = request.args.get('token')
+    if token == "token":
+        return 'true'
+    else:
+        return 'false'
 
 
 def setup(app: Flask):
