@@ -1,4 +1,4 @@
-from flask import Flask, request
+from flask import Flask, request, Response
 
 
 def login():
@@ -6,7 +6,7 @@ def login():
     password = request.args.get('password')
     if login == "admin" and password == "qwerty123":
         return "token"
-    raise ValueError("Auth error")
+    return Response(status=403)
 
 
 def setup(app: Flask):
