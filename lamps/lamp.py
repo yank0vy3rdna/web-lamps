@@ -1,5 +1,8 @@
 import socket
 
+from services import clickhouse
+from utils import config
+
 getDataRequest = [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
 lampOFFRequest = [1, 80, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
 lampONRequest = [1, 160, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
@@ -32,13 +35,20 @@ class Lamp:
         self.ip = '10.200.120.' + str(self.lamp_id)
 
     def request(self, body):
-        sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-        sock.settimeout(1)
-        sock.sendto(bytes(body), 0, (self.ip, 8888))
-        return list(sock.recv(1024))
+        try:
+            sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+            sock.settimeout(1)
+            sock.sendto(bytes(body), 0, (self.ip, 8888))
+            return list(sock.recv(1024))
+        except Exception:
+            self.connected = 0
 
     def update(self):
         data = self.request(getDataRequest)
+        if data:
+            self.get_data(data)
+
+    def get_data(self, data):
         highByte = data[28] << 8
         lowByte = data[27] & 0x00ff
         self.amperage = highByte | lowByte
@@ -52,14 +62,20 @@ class Lamp:
             self.amperage = (self.amperage - 512) * ki
         self.enable = data[29] == 0
         self.connected = 1
+        if config.CLICKHOUSE_LOGGING_ENABLED:
+            clickhouse.record(self)
 
     def on(self):
         if not self.disable_control:
-            self.request(lampONRequest)
+            data = self.request(lampONRequest)
+            if data:
+                self.get_data(data)
 
     def off(self):
         if not self.disable_control:
-            self.request(lampOFFRequest)
+            data = self.request(lampOFFRequest)
+            if data:
+                self.get_data(data)
 
     def to_dict(self):
         return {

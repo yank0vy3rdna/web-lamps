@@ -1,3 +1,4 @@
+from .clickhouse import clickhouse
 from . import lamps_checker, suntime
 
 def setup():
