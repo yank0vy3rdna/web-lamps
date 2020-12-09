@@ -36,10 +36,12 @@ class ClickHouse:
     def requests(self):
         while True:
             if len(self.queue) != 0:
+                queue = self.queue.copy()
+                self.queue.clear()
                 try:
                     self.client.execute(
                         "INSERT INTO lamps.lamps (* EXCEPT(d)) VALUES",
-                        self.queue
+                        queue
                     )
                 except Exception as e:
                     print(e)
