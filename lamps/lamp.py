@@ -13,9 +13,9 @@ ki = 0.0245
 class Lamp:
     lamp_id = None
     ip = None
-    amperage = None
-    enable = None
-    voltage = None
+    amperage = 0
+    enable = False
+    voltage = 0
     connected = None
     map_x = None
     map_y = None
@@ -47,6 +47,11 @@ class Lamp:
         data = self.request(getDataRequest)
         if data:
             self.get_data(data)
+        if config.CLICKHOUSE_LOGGING_ENABLED:
+            try:
+                clickhouse.clickhouse.record(self)
+            except Exception as e:
+                print(e)
 
     def get_data(self, data):
         highByte = data[28] << 8
@@ -62,20 +67,22 @@ class Lamp:
             self.amperage = (self.amperage - 512) * ki
         self.enable = data[29] == 0
         self.connected = 1
-        if config.CLICKHOUSE_LOGGING_ENABLED:
-            clickhouse.record(self)
 
     def on(self):
         if not self.disable_control:
             data = self.request(lampONRequest)
             if data:
                 self.get_data(data)
+            if config.CLICKHOUSE_LOGGING_ENABLED:
+                clickhouse.record(self)
 
     def off(self):
         if not self.disable_control:
             data = self.request(lampOFFRequest)
             if data:
                 self.get_data(data)
+            if config.CLICKHOUSE_LOGGING_ENABLED:
+                clickhouse.record(self)
 
     def to_dict(self):
         return {

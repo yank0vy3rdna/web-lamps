@@ -9,8 +9,8 @@ def getDataAsync(lampid):
     while True:
         try:
             lampsRepository.getLampById(lampid).update()
-        except Exception:
-            pass
+        except Exception as e:
+            print(e)
         time.sleep(3)
 
 
