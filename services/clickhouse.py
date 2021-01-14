@@ -57,16 +57,7 @@ class ClickHouse:
                 lamp.connected,
                 int(lamp.enable)
             )
-        else:
-            data = (
-                int(lamp.lamp_id),
-                0,
-                0,
-                0,
-                0,
-                0
-            )
-        self.queue.append(data)
+            self.queue.append(data)
 
 
 clickhouse = ClickHouse()
