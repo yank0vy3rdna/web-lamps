@@ -29,6 +29,7 @@ class ClickHouse:
                            )
                             ENGINE MergeTree
                             ORDER BY d
+                            TTL d + INTERVAL 2 WEEK
                             """)
         except Exception as e:
             print(e)
@@ -39,6 +40,7 @@ class ClickHouse:
                 queue = self.queue.copy()
                 self.queue.clear()
                 try:
+                    self.client.execute("OPTIMIZE TABLE lamps")
                     self.client.execute(
                         "INSERT INTO lamps.lamps (* EXCEPT(d)) VALUES",
                         queue
